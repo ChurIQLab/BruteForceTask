@@ -8,24 +8,70 @@ final class ViewController: UIViewController {
         didSet {
             if isBlack {
                 self.view.backgroundColor = .black
+                self.labelPassword.textColor = .white
             } else {
                 self.view.backgroundColor = .white
+                self.labelPassword.textColor = .black
             }
         }
     }
 
     // MARK: - Outlets
 
-    private lazy var button: UIButton = {
+    private lazy var buttonChangBackground: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .systemBlue
-        button.setTitle("Button", for: .normal)
+        button.setTitle("Change Background Color", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         button.tintColor = .white
+        button.layer.cornerRadius = 25
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(onBut), for: .touchUpInside)
         return button
     }()
+
+    private lazy var labelPassword: UILabel = {
+        let label = UILabel()
+        label.text = "Label"
+        label.textColor = .white
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private lazy var textFieldPassword: UITextField = {
+        let textField = UITextField()
+        textField.backgroundColor = .white
+        textField.textColor = .black
+        textField.textAlignment = .center
+        textField.placeholder = "password"
+        textField.layer.cornerRadius = 25
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = UIColor.systemGray.cgColor
+        textField.isSecureTextEntry = true
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+
+    private lazy var buttonPassword: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .systemBlue
+        button.setTitle("Generate password", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        button.tintColor = .white
+        button.layer.cornerRadius = 25
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(generatePassword), for: .touchUpInside)
+        return button
+    }()
+
+    private lazy var spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        return spinner
+    }()
+
 
     // MARK: - Action
 
@@ -34,24 +80,46 @@ final class ViewController: UIViewController {
         isBlack.toggle()
     }
 
+    @objc
+    private func generatePassword() { }
+
     // MARK: - Lyfecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView()
-        self.bruteForce(passwordToUnlock: "1!gr")
     }
 
     // MARK: - Configure
 
     private func configureView() {
-        view.backgroundColor = .white
-        view.addSubview(button)
+        [buttonChangBackground, labelPassword, textFieldPassword, buttonPassword, spinner]
+            .forEach { view.addSubview($0) }
+
         NSLayoutConstraint.activate([
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            button.widthAnchor.constraint(equalToConstant: 100)
+            labelPassword.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            labelPassword.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            labelPassword.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+
+            textFieldPassword.topAnchor.constraint(equalTo: labelPassword.bottomAnchor, constant: 100),
+            textFieldPassword.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100),
+            textFieldPassword.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -100),
+            textFieldPassword.heightAnchor.constraint(equalToConstant: 50),
+
+            buttonPassword.topAnchor.constraint(equalTo: textFieldPassword.bottomAnchor, constant: 100),
+            buttonPassword.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100),
+            buttonPassword.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -100),
+            buttonPassword.heightAnchor.constraint(equalToConstant: 50),
+
+            buttonChangBackground.topAnchor.constraint(equalTo: buttonPassword.bottomAnchor, constant: 100),
+            buttonChangBackground.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100),
+            buttonChangBackground.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -100),
+            buttonChangBackground.heightAnchor.constraint(equalToConstant: 50),
+
+            spinner.centerYAnchor.constraint(equalTo: textFieldPassword.centerYAnchor),
+            spinner.leadingAnchor.constraint(equalTo: textFieldPassword.trailingAnchor, constant: 10)
         ])
+
     }
 
     // MARK: - Func
