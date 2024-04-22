@@ -81,7 +81,11 @@ final class ViewController: UIViewController {
     }
 
     @objc
-    private func generatePassword() { }
+    private func generatePassword() {
+        let passwordLength = 5
+        let password = PasswordGenerator.generatePassword(lenght: passwordLength)
+        textFieldPassword.text = password
+    }
 
     // MARK: - Lyfecycle
 
