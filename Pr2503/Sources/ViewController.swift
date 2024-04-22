@@ -32,7 +32,7 @@ final class ViewController: UIViewController {
 
     private lazy var labelPassword: UILabel = {
         let label = UILabel()
-        label.text = "Label"
+        label.text = "Brute Force"
         label.textColor = .white
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
@@ -68,6 +68,7 @@ final class ViewController: UIViewController {
 
     private lazy var spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)
+        spinner.color = .green
         spinner.translatesAutoresizingMaskIntoConstraints = false
         return spinner
     }()
@@ -82,9 +83,16 @@ final class ViewController: UIViewController {
 
     @objc
     private func generatePassword() {
-        let passwordLength = 5
+        let passwordLength = 3
         let password = PasswordGenerator.generatePassword(lenght: passwordLength)
-        textFieldPassword.text = password
+        self.labelPassword.text = "Идет подбор пароля..."
+        self.textFieldPassword.isSecureTextEntry = true
+        self.textFieldPassword.text = password
+        self.spinner.startAnimating()
+
+        DispatchQueue.global().async { [weak self] in
+            self?.bruteForce(passwordToUnlock: password)
+        }
     }
 
     // MARK: - Lyfecycle
@@ -133,15 +141,14 @@ final class ViewController: UIViewController {
         
         var password: String = ""
         
-        // Will strangely ends at 0000 instead of ~~~
-        while password != passwordToUnlock { // Increase MAXIMUM_PASSWORD_SIZE value for more
+        while password != passwordToUnlock {
             password = BruteForce().generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
-            //             Your stuff here
-            print(password)
-            // Your stuff here
         }
-        
-        print(password)
+        DispatchQueue.main.async { [weak self] in
+            self?.labelPassword.text = password
+            self?.spinner.stopAnimating()
+            self?.textFieldPassword.isSecureTextEntry = false
+        }
     }
 }
 
