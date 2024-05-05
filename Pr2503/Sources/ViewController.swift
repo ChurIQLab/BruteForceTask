@@ -89,6 +89,7 @@ final class ViewController: UIViewController {
         self.textFieldPassword.isSecureTextEntry = true
         self.textFieldPassword.text = password
         self.spinner.startAnimating()
+        self.buttonPassword.isEnabled = false
 
         DispatchQueue.global().async { [weak self] in
             self?.bruteForce(passwordToUnlock: password)
@@ -148,6 +149,7 @@ final class ViewController: UIViewController {
             self?.labelPassword.text = password
             self?.spinner.stopAnimating()
             self?.textFieldPassword.isSecureTextEntry = false
+            self?.buttonPassword.isEnabled = true
         }
     }
 }
